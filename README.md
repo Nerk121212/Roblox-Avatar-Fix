@@ -47,7 +47,7 @@
 * **Created the initial project structure**
 
   * `service.bat`
-  * `lists\`
+  * `lists`
   * PowerShell scripts
   * README documentation.
 
