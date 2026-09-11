@@ -2,6 +2,16 @@
 chcp 65001 >nul
 setlocal EnableExtensions EnableDelayedExpansion
 
+:: Immediate UAC elevation through Windows ShellExecute.
+fltmc >nul 2>&1
+if errorlevel 1 (
+    wscript.exe //nologo "%~dp0run-as-admin.vbs" "%~f0"
+    exit /b
+)
+
+:: Work from the add-on directory.
+cd /d "%~dp0"
+
 set "ROOT=%~dp0"
 set "LISTS=%ROOT%lists"
 set "LIST=%LISTS%\list-exclude-user.txt"
@@ -10,6 +20,7 @@ set "PS1=%ROOT%update-avatar-fix.ps1"
 
 if not exist "%LISTS%" md "%LISTS%" >nul 2>&1
 if not exist "%PS1%" goto :missing_ps1
+if not exist "%~dp0run-as-admin.vbs" goto :missing_vbs
 
 :menu
 cls
@@ -124,13 +135,12 @@ if exist "%SystemRoot%\System32\drivers\etc\hosts" (
 exit /b
 
 :missing_ps1
-echo [ERROR] Required PowerShell helper is missing.
-echo Please keep update-list.ps1, remove-list.ps1 and update-hosts.ps1 next to service.bat.
+echo [ERROR] Required PowerShell helper is missing: %PS1%
 pause
 exit /b 1
 
-:missing_ps1
-echo [ERROR] update-avatar-fix.ps1 is missing:
-echo %PS1%
+:missing_vbs
+echo [ERROR] run-as-admin.vbs is missing next to service.bat.
+echo %~dp0run-as-admin.vbs
 pause
 exit /b 1
