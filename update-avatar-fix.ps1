@@ -79,7 +79,6 @@ if (-not (Test-Path -LiteralPath $List)) {
     [System.IO.File]::WriteAllText($List, '', (New-Object System.Text.UTF8Encoding($false)))
 }
 
-# 1) Update list file.
 $listText = [System.IO.File]::ReadAllText($List)
 $listText = Remove-Block $listText $ListStart $ListEnd
 
@@ -91,9 +90,6 @@ if ($Action -eq 'ON') {
 
 [System.IO.File]::WriteAllText($List, $listText, (New-Object System.Text.UTF8Encoding($false)))
 
-# 2) Update hosts IN PLACE.
-# This avoids the prior failures with temp-file creation/replacement while
-# preserving all unrelated hosts entries.
 $hostText = [System.IO.File]::ReadAllText($Hosts)
 $hostText = Remove-Block $hostText $HostStart $HostEnd
 
@@ -103,13 +99,10 @@ if ($Action -eq 'ON') {
     $hostText += (($hostBlock -join [Environment]::NewLine) + [Environment]::NewLine)
 }
 
-# Backup once per invocation so a failed write can be restored.
 $backup = $Hosts + '.roblox-avatar-backup'
 try {
     Copy-Item -LiteralPath $Hosts -Destination $backup -Force -ErrorAction Stop
 
-    # Use Win32 CreateFile through .NET FileStream with write access and a
-    # sharing mode that permits normal readers but obtains exclusive write.
     $bytes = [System.Text.Encoding]::ASCII.GetBytes($hostText)
     $fs = New-Object System.IO.FileStream(
         $Hosts,
