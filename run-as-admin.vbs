@@ -1,6 +1,6 @@
 Option Explicit
 
-Dim shell, fso, batPath, workDir
+Dim shell, fso, batPath, workDir, cmdArgs
 Set shell = CreateObject("Shell.Application")
 Set fso = CreateObject("Scripting.FileSystemObject")
 
@@ -12,3 +12,4 @@ batPath = WScript.Arguments(0)
 workDir = fso.GetParentFolderName(batPath)
 
 shell.ShellExecute "cmd.exe", "/d /c """ & batPath & """", workDir, "runas", 1
+
