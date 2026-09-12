@@ -1,1 +1,0 @@
-# Intentionally empty: CDN IPs are dynamic and should not be hardcoded here.
