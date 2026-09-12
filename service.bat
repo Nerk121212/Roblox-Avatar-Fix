@@ -1,44 +1,30 @@
 @echo off
+chcp 65001 >nul
 setlocal EnableExtensions EnableDelayedExpansion
-cd /d "%~dp0"
-set "ADDON=%~dp0"
-set "ROOT=%ADDON%"
-set "LISTS=%ADDON%lists\"
-if exist "%ADDON%..\lists\" if exist "%ADDON%..\bin\" (
-    set "ROOT=%ADDON%..\"
-    set "LISTS=%ROOT%lists\"
-)
-set "EXCLUDE=%LISTS%list-exclude-user.txt"
-set "HOSTS=%SystemRoot%\System32\drivers\etc\hosts"
-set "AUTOCLOSE_FILE=%ADDON%autoclose.cfg"
+
+:: Immediate UAC elevation through Windows ShellExecute.
 fltmc >nul 2>&1
 if errorlevel 1 (
-    powershell.exe -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs -WorkingDirectory '%~dp0'"
+    wscript.exe //nologo "%~dp0run-as-admin.vbs" "%~f0"
     exit /b
 )
+
+:: Work from the add-on directory.
+cd /d "%~dp0"
+
+set "ROOT=%~dp0"
+set "LISTS=%ROOT%lists"
+set "LIST=%LISTS%\list-exclude-user.txt"
+set "HOSTS=%SystemRoot%\System32\drivers\etc\hosts"
+set "PS1=%ROOT%update-avatar-fix.ps1"
+
 if not exist "%LISTS%" md "%LISTS%" >nul 2>&1
-if not exist "%ADDON%update-list.ps1" goto :missing
-if not exist "%ADDON%update-hosts.ps1" goto :missing
-if not exist "%ADDON%remove-list.ps1" goto :missing
-if not exist "%EXCLUDE%" (
-    >"%EXCLUDE%" echo # Created by Roblox Avatar Fix
-    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%ADDON%update-list.ps1" -Path "%EXCLUDE%" >nul 2>&1
-)
-set "AUTOCLOSE=ON"
-if exist "%AUTOCLOSE_FILE%" set /p AUTOCLOSE=<"%AUTOCLOSE_FILE%"
-if /i not "%AUTOCLOSE%"=="OFF" set "AUTOCLOSE=ON"
-goto :menu
+if not exist "%PS1%" goto :missing_ps1
+if not exist "%~dp0run-as-admin.vbs" goto :missing_vbs
+
 :menu
 cls
-set "STATUS=DISABLED"
-if exist "%EXCLUDE%" (
-    findstr /c:"# === ROBLOX AVATAR FIX BEGIN ===" "%EXCLUDE%" >nul 2>&1
-    if not errorlevel 1 set "STATUS=ENABLED"
-) else set "STATUS=REPAIRING"
-if exist "%HOSTS%" (
-    findstr /c:"# === ROBLOX AVATAR FIX HOSTS BEGIN ===" "%HOSTS%" >nul 2>&1
-    if not errorlevel 1 if /i "!STATUS!"=="DISABLED" set "STATUS=PARTIAL"
-)
+call :status
 echo.
 echo =========================================
 echo        ROBLOX AVATAR FIX
@@ -49,63 +35,112 @@ echo.
 echo    1. Enable Avatar Fix
 echo    2. Disable Avatar Fix
 echo    3. Check Status
-echo    4. AutoClose [!AUTOCLOSE!]
 echo    0. Exit
 echo.
-choice /c 12340 /n /m "Select: "
-set "MENU_CHOICE=%errorlevel%"
-if "!MENU_CHOICE!"=="5" exit /b 0
-if "!MENU_CHOICE!"=="4" goto :toggle_autoclose
-if "!MENU_CHOICE!"=="3" goto :menu
-if "!MENU_CHOICE!"=="2" goto :disable
-if "!MENU_CHOICE!"=="1" goto :enable
+choice /c 1230 /n /m "Select: "
+
+if errorlevel 4 exit /b
+if errorlevel 3 goto :menu
+if errorlevel 2 goto :disable
+if errorlevel 1 goto :enable
 goto :menu
+
 :enable
 cls
 echo Enabling Roblox Avatar Fix...
-if not exist "%LISTS%" md "%LISTS%" >nul 2>&1
-if not exist "%EXCLUDE%" echo # Created by Roblox Avatar Fix>"%EXCLUDE%"
+set "ADDON=%~dp0"
+set "ROOT=%ADDON%..\"
+set "LISTS=%ROOT%lists\"
+if not exist "%ROOT%bin\winws.exe" if exist "%ADDON%lists\" set "ROOT=%ADDON%"&set "LISTS=%ADDON%lists\"
+set "EXCLUDE=%LISTS%list-exclude-user.txt"
+fltmc >nul 2>&1
+if errorlevel 1 (
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
+  exit /b
+)
+if not exist "%LISTS%" (
+  echo [ERROR] Lists folder not found: %LISTS%
+  pause
+  goto :menu
+)
+if not exist "%EXCLUDE%" >"%EXCLUDE%" echo # Created by Roblox Avatar Fix
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%ADDON%update-list.ps1" -Path "%EXCLUDE%"
-if errorlevel 1 goto :enable_error
+if errorlevel 1 goto :avatar_enable_err
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%ADDON%update-hosts.ps1" ON
-if errorlevel 1 goto :enable_error
+if errorlevel 1 goto :avatar_enable_err
 echo.
 echo [OK] Roblox Avatar Fix ENABLED
-if /i "!AUTOCLOSE!"=="ON" exit /b 0
-pause
-goto :menu
-:enable_error
+echo [OK] list-exclude-user.txt updated
+echo [OK] tr.rbxcdn.com hosts entries added
+echo [OK] DNS servers were NOT changed.
 echo.
-echo [ERROR] Avatar Fix could not be enabled.
-echo Check that the Lists folder and PowerShell files are present.
+echo Restart your normal zapret BAT once if needed to reload lists.
 pause
 goto :menu
+
+:avatar_enable_err
+echo [ERROR] Avatar Fix could not be enabled.
+pause
+goto :menu
+
 :disable
 cls
 echo Disabling Roblox Avatar Fix...
+set "ADDON=%~dp0"
+set "ROOT=%ADDON%..\"
+set "LISTS=%ROOT%lists\"
+if not exist "%ROOT%bin\winws.exe" if exist "%ADDON%lists\" set "ROOT=%ADDON%"&set "LISTS=%ADDON%lists\"
+set "EXCLUDE=%LISTS%list-exclude-user.txt"
+fltmc >nul 2>&1
+if errorlevel 1 (
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
+  exit /b
+)
 if exist "%EXCLUDE%" powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%ADDON%remove-list.ps1" -Path "%EXCLUDE%"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%ADDON%update-hosts.ps1" OFF
-if errorlevel 1 goto :disable_error
+if errorlevel 1 goto :avatar_disable_err
 echo.
 echo [OK] Roblox Avatar Fix DISABLED
-if /i "!AUTOCLOSE!"=="ON" exit /b 0
+echo [OK] Only this add-on block was removed.
+echo [OK] DNS servers were NOT changed.
+echo.
+echo Restart your normal zapret BAT once if needed to reload lists.
 pause
 goto :menu
-:disable_error
-echo.
+
+:avatar_disable_err
 echo [ERROR] Avatar Fix could not be disabled.
 pause
 goto :menu
-:toggle_autoclose
-if /i "!AUTOCLOSE!"=="ON" (
-    set "AUTOCLOSE=OFF"
+
+:status
+set "STATUS=DISABLED"
+set "ADDON=%~dp0"
+set "ROOT=%ADDON%..\"
+set "LISTS=%ROOT%lists\"
+if not exist "%ROOT%bin\winws.exe" if exist "%ADDON%lists\" set "ROOT=%ADDON%"&set "LISTS=%ADDON%lists\"
+set "EXCLUDE=%LISTS%list-exclude-user.txt"
+if exist "%EXCLUDE%" (
+    findstr /c:"# === ROBLOX AVATAR FIX BEGIN ===" "%EXCLUDE%" >nul 2>&1
+    if not errorlevel 1 set "STATUS=ENABLED"
 ) else (
-    set "AUTOCLOSE=ON"
+    set "STATUS=NO LIST FILE"
 )
->"%AUTOCLOSE_FILE%" echo(!AUTOCLOSE!
-goto :menu
-:missing
-echo [ERROR] Required files are missing.
-echo Make sure update-list.ps1, update-hosts.ps1 and remove-list.ps1 are beside service.bat.
+if exist "%SystemRoot%\System32\drivers\etc\hosts" (
+    findstr /c:"# === ROBLOX AVATAR FIX HOSTS BEGIN ===" "%SystemRoot%\System32\drivers\etc\hosts" >nul 2>&1
+    if not errorlevel 1 (
+        if "!STATUS!"=="DISABLED" set "STATUS=PARTIAL"
+    )
+)
+exit /b
+
+:missing_ps1
+echo [ERROR] Required PowerShell helper is missing: %PS1%
+pause
+exit /b 1
+
+:missing_vbs
+echo [ERROR] run-as-admin.vbs is missing next to service.bat.
+echo %~dp0run-as-admin.vbs
 pause
 exit /b 1
