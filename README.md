@@ -1,7 +1,7 @@
 ## Requirements
 
 * Windows 10 / Windows 11
-* Права администратора для операций, связанных с `hosts`
+* Administrator rights for operations related to `hosts`
 
 ## What Was Created
 
