@@ -4,7 +4,7 @@ $start='# === ROBLOX AVATAR FIX BEGIN ==='
 $end='# === ROBLOX AVATAR FIX END ==='
 $block=@(
 $start
-'# Roblox avatar, profile, thumbnail and image traffic.'
+'# Roblox avatar/profile/image traffic: keep it OUT of zapret desync.'
 'avatar.roblox.com'
 'avatars.roblox.com'
 'thumbnails.roblox.com'
