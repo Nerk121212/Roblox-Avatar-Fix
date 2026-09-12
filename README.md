@@ -53,4 +53,4 @@
 
 ### Initial Release
 
-**Roblox Avatar Fix v1.0.0** — the first public release of a dedicated utility for fixing Roblox avatars, thumbnails, and CDN images when they fail to load. The project is designed to operate independently, with its `service.bat` control panel based on the general service-management approach used by **zapret-discord-youtube**, but adapted specifically for Roblox Avatar Fix.
+**Roblox Avatar Fix v1.0.1** — the first public release of a dedicated utility for fixing Roblox avatars, thumbnails, and CDN images when they fail to load. The project is designed to operate independently, with its `service.bat` control panel based on the general service-management approach used by **zapret-discord-youtube**, but adapted specifically for Roblox Avatar Fix.
