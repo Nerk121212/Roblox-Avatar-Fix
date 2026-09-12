@@ -1,6 +1,6 @@
 Option Explicit
 
-Dim shell, fso, batPath, workDir, cmdArgs
+Dim shell, fso, batPath, workDir
 Set shell = CreateObject("Shell.Application")
 Set fso = CreateObject("Scripting.FileSystemObject")
 
@@ -11,5 +11,4 @@ End If
 batPath = WScript.Arguments(0)
 workDir = fso.GetParentFolderName(batPath)
 
-' Run the batch file elevated through UAC.
 shell.ShellExecute "cmd.exe", "/d /c """ & batPath & """", workDir, "runas", 1
