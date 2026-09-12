@@ -47,7 +47,7 @@ Disabling the fix removes only the managed block created by Roblox Avatar Fix.
 
 ## Usage
 
-Run `service.bat` as administrator.
+Run `service.bat`.
 
 The menu provides:
 
