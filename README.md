@@ -1,53 +1,56 @@
-# Roblox Avatar Fix
+## What Was Created
 
-Roblox Avatar Fix is a small utility for fixing Roblox avatars, thumbnails, and CDN images when they fail to load.
+* **Created Roblox Avatar Fix**
 
-## Version
+  * A dedicated utility designed to fix Roblox avatars, thumbnails, and CDN images when they fail to load.
+  * Added support for `tr.rbxcdn.com` and other Roblox CDN domains.
+  * The addon works independently and does not require zapret to be installed or running.
 
-**v1.0.1**
+* **Created a unified `service.bat` control panel**
 
-## What's new in v1.0.1
+  * Enable Avatar Fix
+  * Disable Avatar Fix
+  * Check Status
+  * Displays the current fix status directly in the menu.
+  * The structure and control-panel approach of `service.bat` were taken as a foundation from the service management concept used by **zapret**, then adapted specifically for Roblox Avatar Fix.
 
-- Added `AutoClose` setting to the `service.bat` menu.
-- Added one control panel for Enable, Disable, Status, and AutoClose.
-- AutoClose can be switched between `ON` and `OFF`.
-- The AutoClose setting is saved in `autoclose.cfg`.
-- Cleaned up unnecessary script comments and extra output.
-- Improved the list and `hosts` management flow.
-- Kept DNS server settings unchanged.
-- `Enable` and `Disable` only manage the Roblox Avatar Fix blocks they created.
-- Updated the project files and list files for the 1.0.1 release.
+* **Added `list-exclude-user.txt` integration**
 
-## Included
+  * Roblox-specific domains are added to a separate marked block.
+  * The block can be enabled or removed without affecting other list entries.
 
-- `service.bat`
-- PowerShell scripts for list and `hosts` management
-- `run-as-admin.vbs`
-- Roblox-specific list files in `lists`
+* **Added `hosts` integration**
 
-## Roblox CDN hosts
+  * The following `tr.rbxcdn.com` entries are used when the fix is enabled:
 
-When enabled, the fix adds these entries for `tr.rbxcdn.com`:
+    * `54.230.253.22`
+    * `54.230.253.81`
+    * `54.230.253.48`
+    * `54.230.253.59`
+  * Disabling the fix removes only the entries created by Roblox Avatar Fix.
 
-- `54.230.253.22`
-- `54.230.253.81`
-- `54.230.253.48`
-- `54.230.253.59`
+* **Added automatic administrator elevation**
 
-Disabling the fix removes only the managed block created by Roblox Avatar Fix.
+  * Operations requiring access to the Windows `hosts` file trigger a UAC elevation request.
 
-## Usage
+* **Added safe Enable / Disable handling**
 
-Run `service.bat` as administrator.
+  * Existing `hosts` entries and unrelated list rules are preserved.
+  * DNS server settings are not modified.
 
-The menu provides:
+* **Created PowerShell components**
 
-1. Enable Avatar Fix
-2. Disable Avatar Fix
-3. Check Status
-4. AutoClose
-0. Exit
+  * Automatic Roblox list management.
+  * `hosts` management.
+  * Avatar Fix status handling.
 
-### Previous release
+* **Created the initial project structure**
 
-**v1.0.0** — initial public release.
+  * `service.bat`
+  * `lists`
+  * PowerShell scripts
+  * README documentation.
+
+### Initial Release
+
+**Roblox Avatar Fix v1.0.0** — the first public release of a dedicated utility for fixing Roblox avatars, thumbnails, and CDN images when they fail to load. The project is designed to operate independently, with its `service.bat` control panel based on the general service-management approach used by **zapret-discord-youtube**, but adapted specifically for Roblox Avatar Fix.
