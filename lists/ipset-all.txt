@@ -1,1 +1,0 @@
-# Intentionally empty: the avatar add-on does not hardcode Roblox CDN IP ranges.
