@@ -31,8 +31,6 @@ function Write-Hosts([string]$Content) {
         [System.IO.File]::WriteAllText($tmp, $Content, [System.Text.Encoding]::ASCII)
         for ($i = 0; $i -lt 20; $i++) {
             try {
-                # Use Move-Item only after a successful temporary write. If the file is busy,
-                # retry; never use File.Replace because it caused path errors on some systems.
                 Copy-Item -LiteralPath $tmp -Destination $Path -Force -ErrorAction Stop
                 return
             }
