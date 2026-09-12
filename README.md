@@ -1,63 +1,68 @@
 ## Requirements
 
 * Windows 10 / Windows 11
-* Права администратора для операций, связанных с `hosts`
+* Administrator rights for operations related to `hosts`
 
 ## What Was Created
 
-* **Created Roblox Avatar Fix**
+## Version
 
-  * A dedicated utility designed to fix Roblox avatars, thumbnails, and CDN images when they fail to load.
-  * Added support for `tr.rbxcdn.com` and other Roblox CDN domains.
-  * The addon works independently and does not require zapret to be installed or running.
+**v1.0.2**
 
-* **Created a unified `service.bat` control panel**
+## What's new in v1.0.2
 
-  * Enable Avatar Fix
-  * Disable Avatar Fix
-  * Check Status
-  * Displays the current fix status directly in the menu.
-  * The structure and control-panel approach of `service.bat` were taken as a foundation from the service management concept used by **zapret**, then adapted specifically for Roblox Avatar Fix.
+* Redesigned the `service.bat` control panel with a new CMD interface.
+* Added a custom `Roblox Avatar Fix` CMD title and interface color.
+* Added a new visual status display for Avatar Fix and AutoClose.
+* Added a `Refresh Status` option to the menu.
+* Improved the AutoClose toggle interface.
+* Changed administrator elevation from `run-as-admin.vbs` to PowerShell `Start-Process -Verb RunAs`.
+* Added automatic detection of the addon and list directory location.
+* Added automatic creation of the `lists` directory when it is missing.
+* Added automatic recreation and repair of `list-exclude-user.txt` when the file is missing.
+* Changed the missing-list status from `NO LIST FILE` to `REPAIRING`.
+* Improved handling of missing PowerShell scripts and required project files.
+* Simplified and reorganized the list and `hosts` management scripts.
+* Reduced unnecessary comments and shortened the PowerShell scripts.
+* Simplified the release package by removing unused helper and list files.
 
-* **Added `list-exclude-user.txt` integration**
+## Included
 
-  * Roblox-specific domains are added to a separate marked block.
-  * The block can be enabled or removed without affecting other list entries.
+* `service.bat`
+* `update-list.ps1`
+* `update-hosts.ps1`
+* `remove-list.ps1`
+* `list-exclude-user.txt` in `lists`
 
-* **Added `hosts` integration**
+## Roblox CDN hosts
 
-  * The following `tr.rbxcdn.com` entries are used when the fix is enabled:
+When enabled, the fix adds these entries for `tr.rbxcdn.com`:
 
-    * `54.230.253.22`
-    * `54.230.253.81`
-    * `54.230.253.48`
-    * `54.230.253.59`
-  * Disabling the fix removes only the entries created by Roblox Avatar Fix.
+* `54.230.253.22`
+* `54.230.253.81`
+* `54.230.253.48`
+* `54.230.253.59`
 
-* **Added automatic administrator elevation**
+Disabling the fix removes only the managed block created by Roblox Avatar Fix.
 
-  * Operations requiring access to the Windows `hosts` file trigger a UAC elevation request.
+## Usage
 
-* **Added safe Enable / Disable handling**
+Run `service.bat`.
 
-  * Existing `hosts` entries and unrelated list rules are preserved.
-  * DNS server settings are not modified.
+The menu provides:
 
-* **Created PowerShell components**
+1. Enable Avatar Fix
+2. Disable Avatar Fix
+3. Refresh Status
+4. Toggle AutoClose
+5. Exit
 
-  * Automatic Roblox list management.
-  * `hosts` management.
-  * Avatar Fix status handling.
+### Previous release
 
-* **Created the initial project structure**
-
-  * `service.bat`
-  * `lists\`
-  * PowerShell scripts
-  * README documentation.
+**v1.0.1** — previous release with the AutoClose control panel and persistent AutoClose configuration.
 
 ### Initial Release
 
-**Roblox Avatar Fix v1.0.1** — the first public release of a dedicated utility for fixing Roblox avatars, thumbnails, and CDN images when they fail to load. The project is designed to operate independently, with its `service.bat` control panel based on the general service-management approach used by **zapret**, but adapted specifically for Roblox Avatar Fix.
+**Roblox Avatar Fix v1.0.2** — the first public release of a dedicated utility for fixing Roblox avatars, thumbnails, and CDN images when they fail to load. The project is designed to operate independently, with its `service.bat` control panel based on the general service-management approach used by **zapret**, but adapted specifically for Roblox Avatar Fix.
 
 
