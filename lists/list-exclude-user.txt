@@ -1,4 +1,4 @@
-﻿# Roblox Avatar Fix managed block is inserted here by ON.bat
+﻿﻿# Roblox Avatar Fix managed block is inserted here by ON.bat
 
 # === ROBLOX AVATAR FIX BEGIN ===
 # Roblox avatar/profile/image traffic: keep it OUT of zapret desync.
