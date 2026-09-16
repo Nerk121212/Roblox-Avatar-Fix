@@ -46,7 +46,6 @@
 * `mode.cfg`
 * `lists/list-exclude-user.txt`
 * `lists/list-general-user.txt`
-* `README.txt`
 
 **Build:** 1.0.3
 **Base:** Roblox Avatar Fix 1.0.2
