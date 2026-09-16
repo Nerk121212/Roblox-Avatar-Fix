@@ -11,10 +11,6 @@
 
 ## What's new in v1.0.3
 
-# Roblox Avatar Fix
-
-## Build 1.0.3
-
 ### Added
 
 * Added **ALT_FIX** mode system.
