@@ -4,7 +4,6 @@ $start='# === ROBLOX AVATAR FIX BEGIN ==='
 $end='# === ROBLOX AVATAR FIX END ==='
 $block=@(
 $start
-'# Roblox avatar, profile, thumbnail and image traffic.'
 'avatar.roblox.com'
 'avatars.roblox.com'
 'thumbnails.roblox.com'
